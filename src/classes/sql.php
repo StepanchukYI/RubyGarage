@@ -5,7 +5,7 @@ class sqldb_connection {
 	 * ИНКАПСУЛИРОВАННАЯ ФУНКЦИЯ, ДЛЯ КОДКЛЮЧЕНИЮ В БАЗЕ(ИНКАПСУЛИРОВАННАЯ!!)
 	 */
 	private static function DB_connect() {
-		$dsn      = 'mysql:dbname=test;host=127.0.0.1';
+		$dsn      = 'mysql:dbname=rubygarage;host=127.0.0.1';
 		$user     = 'root';
 		$password = '';
 
@@ -33,11 +33,22 @@ class sqldb_connection {
 	/*
 	 * функция для возвращения всех проектов из базы данных
 	 */
-	public static function readProject( $projName ) {
+	public static function readProject(  ) {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "SELECT * FROM Project" );
-		$sth->execute( array( ':name' => $projName ) );
+		$sth->execute();
+		return $sth->fetch( PDO::FETCH_ASSOC );
+
+	}
+	/*
+	 * функция для возвращения всех проектов из базы данных
+	 */
+	public static function readProjectById( $id ) {
+
+		$dbh = sqldb_connection::DB_connect();
+		$sth = $dbh->prepare( "SELECT * FROM Project WHERE id = :id" );
+		$sth->execute( array( ':id' => $id ));
 		return $sth->fetch( PDO::FETCH_ASSOC );
 
 	}
@@ -71,7 +82,7 @@ class sqldb_connection {
 	public static function createTask( $projName ) {
 
 		$dbh = sqldb_connection::DB_connect();
-		$sth = $dbh->prepare( "INSERT INTO Task(name) VALUE (:name)" );
+		$sth = $dbh->prepare( "INSERT INTO Task(text) VALUE (:name)" );
 		$sth->execute( array( ':name' => $projName ) );
 		return $sth->fetch( PDO::FETCH_ASSOC );
 
