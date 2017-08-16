@@ -19,6 +19,7 @@ class sqldb_connection {
 	}
 
 	/////////////////////////////////////////////////////////////// PROJECT
+
 	/*
 	 * Функция для создания нового проекта
 	 */
@@ -27,7 +28,7 @@ class sqldb_connection {
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "INSERT INTO Project(name) VALUE (:name)" );
 		$sth->execute( array( ':name' => $projName ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $dbh->lastInsertId();
 
 	}
 	/*
@@ -36,9 +37,9 @@ class sqldb_connection {
 	public static function readProject(  ) {
 
 		$dbh = sqldb_connection::DB_connect();
-		$sth = $dbh->prepare( "SELECT * FROM Project" );
+		$sth = $dbh->prepare( "SELECT * FROM Project WHERE status != 'delete'" );
 		$sth->execute();
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->fetchall( PDO::FETCH_ASSOC );
 
 	}
 	/*
@@ -59,8 +60,7 @@ class sqldb_connection {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "UPDATE exercise SET name = :name WHERE id = :id" );
-		$sth->execute( array( ':name' => $projName, ':id' => $id ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->execute( array( ':name' => $projName, ':id' => $id ) );
 
 	}
 	/*
@@ -70,33 +70,42 @@ class sqldb_connection {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "UPDATE exercise SET status = 'delete' WHERE id = :id" );
-		$sth->execute( array( ':id' => $id ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->execute( array( ':id' => $id ) );
 
 	}
+
 
 	/////////////////////////////////////////////////////////////// TASK
 	/*
      * Функция для создания новой задачи
      */
-	public static function createTask( $projName ) {
+	public static function createTask( $name, $id ) {
 
 		$dbh = sqldb_connection::DB_connect();
-		$sth = $dbh->prepare( "INSERT INTO Task(text) VALUE (:name)" );
-		$sth->execute( array( ':name' => $projName ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		$sth = $dbh->prepare( "INSERT INTO Task(text, id) VALUE (:name, :id)" );
+		$sth->execute( array( ':name' => $name, ':id' => $id ) );
+		return $dbh->lastInsertId();
 
 	}
 	/*
 	 * функция для возвращения всех задачи из базы данных
 	 */
-	public static function readTask( $projName ) {
+	public static function readTask( ) {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "SELECT * FROM Task WHERE status!='delete'" );
-		$sth->execute( array( ':name' => $projName ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		$sth->execute();
+		return $sth->fetchAll( PDO::FETCH_ASSOC );
+	}
+	/*
+	 * функция для возвращения всех задачи из базы данных
+	 */
+	public static function readTaskNyId( $id ) {
 
+		$dbh = sqldb_connection::DB_connect();
+		$sth = $dbh->prepare( "SELECT * FROM Task WHERE status!='delete' AND id = :id" );
+		$sth->execute( array( ':id' => $id ) );
+		return $sth->fetch( PDO::FETCH_ASSOC );
 	}
 	/*
 	 * Функция для обновления текста задачи
@@ -105,8 +114,7 @@ class sqldb_connection {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "UPDATE Task SET text = :text WHERE id = :id" );
-		$sth->execute( array( ':text' => $taskText, ':id' => $id ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->execute( array( ':text' => $taskText, ':id' => $id ) );
 
 	}
 	/*
@@ -116,8 +124,7 @@ class sqldb_connection {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "UPDATE Task SET status = 'done' WHERE id = :id" );
-		$sth->execute( array( ':id' => $id ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->execute( array( ':id' => $id ) );
 
 	}
 	/*
@@ -127,8 +134,7 @@ class sqldb_connection {
 
 		$dbh = sqldb_connection::DB_connect();
 		$sth = $dbh->prepare( "UPDATE Task SET status = 'delete' WHERE id = :id" );
-		$sth->execute( array( ':id' => $id ) );
-		return $sth->fetch( PDO::FETCH_ASSOC );
+		return $sth->execute( array( ':id' => $id ) );
 
 	}
 

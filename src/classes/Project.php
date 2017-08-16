@@ -25,7 +25,7 @@ class Project {
 	function updateText( $id, $text ){
 		$errorArr = array();    //создание массива ошибок.
 
-		if ($id == "") array_push($errorArr, "Error exercise id");  // проверка на пустые поля.
+		if ($id == "") array_push($errorArr, "Error id");  // проверка на пустые поля.
 		if ($text == "") array_push($errorArr, "Enter text");  // проверка на пустые поля.
 
 		if (count($errorArr) == 0) {
@@ -34,7 +34,7 @@ class Project {
 			if($tmp_db_row == true){
 				$tmp_db_row = sqldb_connection::readProjectById($id);
 			} else {
-				$tmp_db_row = "Update error";
+				$tmp_db_row = array( 'error' => "Nothing to show" );
 			}
 			return $tmp_db_row;
 		} else {
