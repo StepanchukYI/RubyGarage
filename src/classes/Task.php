@@ -1,5 +1,7 @@
 <?php
 
+require_once 'sql.php';
+
 class Task {
 
 	function create($text, $id){
@@ -18,19 +20,38 @@ class Task {
 		}
 	}
 
-	function read($text){
-		$errorArr = array();//создание массива ошибок.
+	function read(){
 
-		if ($text == "" || strlen($text) < 1){
-			array_push($errorArr, "Incorrect project name");
-		}
+		$responce = sqldb_connection::readTask();
 
-		if (count($errorArr) == 0) {
-			$tmp_array = sqldb_connection::readTask($text);
-			return $tmp_array;
-		}
-		else {
-			return $errorArr;
+		if($responce){
+			$anser = array();
+			$hight = array();
+			$med = array();
+			$low = array();
+			foreach($responce as $r){
+				if($r['priority'] == 'hight'){
+					$hight[] = $r;
+				}
+				if($r['priority'] == 'medium'){
+					$med[] = $r;
+				}
+				if($r['priority'] == 'low'){
+					$low[] = $r;
+				}
+			}
+			foreach ($hight as $h){
+				$anser[] = $h;
+			}
+			foreach ($med as $h){
+				$anser[] = $h;
+			}
+			foreach ($low as $h){
+				$anser[] = $h;
+			}
+			return $anser;
+		} else {
+			return array( 'error' => "Nothing to show" );
 		}
 	}
 

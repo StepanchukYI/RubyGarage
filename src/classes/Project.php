@@ -5,8 +5,15 @@ class Project {
 
 	function create($text){
 
-		if($text = "" || strlen($text) < 3){
-			return sqldb_connection::createProject($text);
+		if($text != "" || strlen($text) > 3){
+			$tmp_db_row = sqldb_connection::createProject($text);
+			if($tmp_db_row != "false"){
+				return  array( 'success' => "Project was created",
+								'id' => $tmp_db_row);
+			}
+			else {
+				return  array( 'error' => "Project was`t created" );
+			}
 		} else {
 			return  array( 'error' => "Failed name" );
 		}

@@ -1,6 +1,6 @@
 <?php
-require_once '../classes/Project.php';
 require_once '../classes/logging.php';
+require_once '../classes/Project.php';
 extract( $_REQUEST );
 $project = new Project();
 
@@ -21,6 +21,6 @@ switch ( @$command ) {
 		$response = "failed command";
 		break;
 }
-logging::log( @$id . " " . @$text . " " , $response , @$command );
 
-echo $response;
+logging::log( @$id . " " . @$text . " " , json_encode($response) , @$command );
+echo json_encode($response);

@@ -26,7 +26,7 @@ class sqldb_connection {
 	public static function createProject( $projName ) {
 
 		$dbh = sqldb_connection::DB_connect();
-		$sth = $dbh->prepare( "INSERT INTO Project(name) VALUE (:name)" );
+		$sth = $dbh->prepare( "INSERT INTO Project(name,status) VALUE (:name, 'pending')" );
 		$sth->execute( array( ':name' => $projName ) );
 		return $dbh->lastInsertId();
 
@@ -82,7 +82,7 @@ class sqldb_connection {
 	public static function createTask( $name, $id ) {
 
 		$dbh = sqldb_connection::DB_connect();
-		$sth = $dbh->prepare( "INSERT INTO Task(text, id) VALUE (:name, :id)" );
+		$sth = $dbh->prepare( "INSERT INTO Task(text, project_id, status, priority) VALUE (:name, :id, 'pending', 'low')" );
 		$sth->execute( array( ':name' => $name, ':id' => $id ) );
 		return $dbh->lastInsertId();
 
